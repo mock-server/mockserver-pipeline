@@ -1,0 +1,9 @@
+# terraform state backup
+terraform.tfstate.backup
+
+# terraform modules
+.terraform
+
+# aws credentials
+terraform-credentials.txt
+terraform-credentials.dec

@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+set -e
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+TERRAFORM_PATH=~/.tfenv/bin/terraform
+TFENV_PATH=~/.tfenv/bin/tfenv
+TERRAFORM_VERSION="0.11.10"
+
+print_usage() {
+  printf "Usage: ${0} [-v|t] [ACTION] [ENVIRONMENT]\n"
+  printf " ${0} [plan|plan-destroy|apply|destroy] [pipeline]\n"
+  printf "      -v Verbose Mode\n"
+  printf "      -t Trace Mode\n"
+  printf "      -h Help\n"
+  printf "NOTE: Please ensure variables in top of script are correct.\n"
+}
+
+while getopts 'tv' flag; do
+  case "${flag}" in
+    v) OPTS="TF_LOG=INFO" ;;
+    t) OPTS="TF_LOG=TRACE" ;;
+    h) print_usage ;;
+    *) print_usage
+       exit 1 ;;
+  esac
+done
+shift $(( OPTIND - 1 ))
+ACTION=$1
+ENVIRONMENT=$2
+
+check_value() {
+  if [[ -z $1 ]]; then
+    printf "ERROR: Variable has not been set or required argument has not been specified. Please check script.\n\n"
+    print_usage
+    exit 1
+  fi
+}
+
+
+check_path() {
+  check_value $1
+  if [[ ! -e $1 ]]; then
+    printf "ERROR: File/Directory does not exist: ${1}\n\n"
+    print_usage
+    exit 1
+  fi
+}
+
+check_version() {
+  if [[ $(${TERRAFORM_PATH} version | head -n 1) != "Terraform v${TERRAFORM_VERSION}" ]]; then
+    if [[ ! -e ${TFENV_PATH} ]]; then
+      git clone https://github.com/kamatama41/tfenv.git ~/.tfenv
+      echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bash_profile
+    fi
+    ${TFENV_PATH} install ${TERRAFORM_VERSION}
+    ${TFENV_PATH} use ${TERRAFORM_VERSION}
+  fi
+}
+
+init() {
+  rm -rf "${DIR}/.terraform" || true
+  ${TERRAFORM_PATH} init
+}
+
+plan() {
+  ${TERRAFORM_PATH} plan -var-file ${VAR_FILE}
+
+}
+
+plan-destroy() {
+  ${TERRAFORM_PATH} plan -destroy -var-file ${VAR_FILE}
+
+}
+
+apply() {
+  ${TERRAFORM_PATH} apply -var-file ${VAR_FILE}
+
+}
+
+destroy() {
+  ${TERRAFORM_PATH} destroy -var-file ${VAR_FILE}
+
+}
+
+VAR_FILE="${DIR}/variables/${ENVIRONMENT}/values.tfvars"
+
+check_value $ACTION
+check_value $ENVIRONMENT
+check_version
+check_path ${TERRAFORM_PATH}
+check_path ${VAR_FILE}
+printf "TERRAFORM PATH: ${TERRAFORM_PATH}\n"
+printf "TERRAFORM VERSION: ${TERRAFORM_VERSION}\n"
+init
+aws sts get-caller-identity
+eval "${OPTS} ${ACTION} ${ENVIRONMENT}"
