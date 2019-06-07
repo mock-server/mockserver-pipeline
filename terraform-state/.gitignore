@@ -1,5 +1,7 @@
 # terraform state backup
+terraform.tfstate
 terraform.tfstate.backup
+.terraform.tfstate.lock.info
 
 # terraform modules
 .terraform

@@ -35,7 +35,6 @@ check_value() {
   fi
 }
 
-
 check_path() {
   check_value $1
   if [[ ! -e $1 ]]; then
@@ -58,38 +57,49 @@ check_version() {
 
 init() {
   rm -rf "${DIR}/.terraform" || true
+  rm -rf "${DIR}/terraform.tfstate" || true
+  rm -rf "${DIR}/terraform.tfstate.*" || true
   ${TERRAFORM_PATH} init
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-user.aws_iam_user.user mockserver-pipeline-user
+
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-state-lock.aws_dynamodb_table.dynamodb-terraform-state-lock mockserver-terraform-state-lock-dynamo
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-state-lock.aws_iam_policy.dynamo-iam-policy arn:aws:iam::014848309742:policy/mockserver-pipeline-user-dynamodb-mockserver-terraform-state-lock-dynamo-iam-policy
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-state-lock.aws_iam_user_policy_attachment.attach-table-policy mockserver-pipeline-user/arn:aws:iam::014848309742:policy/mockserver-pipeline-user-dynamodb-mockserver-terraform-state-lock-dynamo-iam-policy
+
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-remote-state-storage.aws_s3_bucket.terraform-state-storage mockserver-terraform-remote-state-storage
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-remote-state-storage.aws_iam_policy.s3-iam-policy arn:aws:iam::014848309742:policy/mockserver-pipeline-user-s3-mockserver-terraform-remote-state-storage-iam-policy
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-remote-state-storage.aws_iam_user_policy_attachment.attach-bucket-policy mockserver-pipeline-user/arn:aws:iam::014848309742:policy/mockserver-pipeline-user-s3-mockserver-terraform-remote-state-storage-iam-policy
+
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.credential-encryption-key.aws_kms_key.key c73da5cc-8ab7-404e-8257-ac567eda7e94
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.credential-encryption-key.aws_kms_alias.alias alias/mockserver-credential-encryption-key
 }
 
 plan() {
   ${TERRAFORM_PATH} plan -var-file ${VAR_FILE}
-
 }
 
 plan-destroy() {
   ${TERRAFORM_PATH} plan -destroy -var-file ${VAR_FILE}
-
 }
 
 apply() {
   ${TERRAFORM_PATH} apply -var-file ${VAR_FILE}
-
 }
 
 destroy() {
   ${TERRAFORM_PATH} destroy -var-file ${VAR_FILE}
-
 }
 
 VAR_FILE="${DIR}/variables/${ENVIRONMENT}/values.tfvars"
 
-check_value $ACTION
-check_value $ENVIRONMENT
+check_value ${ACTION}
+check_value ${ENVIRONMENT}
 check_version
 check_path ${TERRAFORM_PATH}
 check_path ${VAR_FILE}
 printf "TERRAFORM PATH: ${TERRAFORM_PATH}\n"
 printf "TERRAFORM VERSION: ${TERRAFORM_VERSION}\n"
-init
+#OPTS="TF_LOG=TRACE"
 aws sts get-caller-identity
-eval "${OPTS} ${ACTION} ${ENVIRONMENT}"
+eval "${OPTS} init"
+eval "${OPTS} ${ACTION}"

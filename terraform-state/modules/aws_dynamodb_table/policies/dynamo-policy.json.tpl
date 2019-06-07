@@ -3,10 +3,8 @@
   "Statement": [
     {
       "Action": [
-        "dynamodb:PutItem",
         "dynamodb:GetItem",
-        "dynamodb:Query",
-        "dynamodb:UpdateItem",
+        "dynamodb:PutItem",
         "dynamodb:DeleteItem"
       ],
       "Resource": [

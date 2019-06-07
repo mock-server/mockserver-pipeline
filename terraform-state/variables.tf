@@ -17,3 +17,7 @@ variable "lock_table_name" {
 variable "credential_encryption_user_arn" {
   type = "string"
 }
+
+variable "regenerate_access_key" {
+  default = "false"
+}

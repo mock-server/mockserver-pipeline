@@ -1,6 +1,24 @@
 #!/usr/bin/env bash
 set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+
+# parse AWS credentials
+credentials_file="${DIR}/terraform-credentials.dec"
+if [[ -f "$credentials_file" ]]
+then
+  echo "$credentials_file found."
+
+  while IFS='=' read -r key value
+  do
+    key=$(echo $key | tr '.' '_')
+    eval "${key}=\$value"
+  done < "$credentials_file"
+
+else
+  echo "$credentials_file not found."
+fi
+
+# basic properties
 TERRAFORM_PATH=~/.tfenv/bin/terraform
 TFENV_PATH=~/.tfenv/bin/tfenv
 TERRAFORM_VERSION="0.11.10"
@@ -36,7 +54,6 @@ check_value() {
   fi
 }
 
-
 check_path() {
   check_value $1
   if [[ ! -e $1 ]]; then
@@ -60,48 +77,41 @@ check_version() {
 init() {
   rm -rf "${DIR}/.terraform" || true
   rm -rf "${DIR}/terraform.tfstate" || true
-  if [ ${ENVIRONMENT} = "prod" ]; then
-     STATE_BUCKET="crypt-terraform-remote-state-storage-prod"
-  else
-     STATE_BUCKET="crypt-terraform-remote-state-storage-nonprod"
-  fi
+  STATE_BUCKET="mockserver-terraform-remote-state-storage"
   echo "Using S3 to manage state: ${STATE_BUCKET}"
-  ${TERRAFORM_PATH} init -backend-config="key=terraform-${SERVICE_NAME}-${ENVIRONMENT}.tfstate" \
-                         -backend-config="encrypt=true" \
-                         -backend-config="bucket=${STATE_BUCKET}" \
-                         -backend-config="dynamodb_table=terraform-state-lock-dynamo" \
-                         -backend-config="region=eu-west-1"
+  eval "${TERRAFORM_PATH} init -backend-config='key=terraform-${SERVICE_NAME}-${ENVIRONMENT}.tfstate' \
+                         -backend-config='encrypt=true' \
+                         -backend-config='bucket=${STATE_BUCKET}' \
+                         -backend-config='dynamodb_table=mockserver-terraform-state-lock-dynamo' \
+                         -backend-config='region=eu-west-1'"
 }
 
 plan() {
   ${TERRAFORM_PATH} plan -var-file ${VAR_FILE}
-
 }
 
 plan-destroy() {
   ${TERRAFORM_PATH} plan -destroy -var-file ${VAR_FILE}
-
 }
 
 apply() {
   ${TERRAFORM_PATH} apply -var-file ${VAR_FILE}
-
 }
 
 destroy() {
   ${TERRAFORM_PATH} destroy -var-file ${VAR_FILE}
-
 }
 
 VAR_FILE="${DIR}/variables/${ENVIRONMENT}/values.tfvars"
 
-check_value $ACTION
-check_value $ENVIRONMENT
+check_value ${ACTION}
+check_value ${ENVIRONMENT}
 check_version
 check_path ${TERRAFORM_PATH}
 check_path ${VAR_FILE}
 printf "TERRAFORM PATH: ${TERRAFORM_PATH}\n"
 printf "TERRAFORM VERSION: ${TERRAFORM_VERSION}\n"
-init
-aws sts get-caller-identity
-eval "${OPTS} ${ACTION} ${ENVIRONMENT}"
+#OPTS="TF_LOG=TRACE"
+eval "AWS_ACCESS_KEY_ID=${awsKeyId} AWS_SECRET_ACCESS_KEY=${awsKeySecret} aws sts get-caller-identity"
+eval "${OPTS} AWS_ACCESS_KEY_ID=${awsKeyId} AWS_SECRET_ACCESS_KEY=${awsKeySecret} init"
+eval "${OPTS} AWS_ACCESS_KEY_ID=${awsKeyId} AWS_SECRET_ACCESS_KEY=${awsKeySecret} ${ACTION}"

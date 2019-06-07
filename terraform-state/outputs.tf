@@ -1,11 +1,11 @@
-output "AWS_ACCESS_KEY_ID" {
+output "awsKeyId" {
   value = "${module.terraform-user.user-access-key-id}"
 }
 
-output "AWS_SECRET_ACCESS_KEY" {
+output "awsKeySecret" {
   value = "${module.terraform-user.user-access-key-secret}"
 }
 
-output "credential-encryption-key-id" {
+output "credentialEncryptionKeyId" {
   value = "${module.credential-encryption-key.key-id}"
 }
