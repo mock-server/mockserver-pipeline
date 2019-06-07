@@ -77,7 +77,7 @@ check_version() {
 init() {
   rm -rf "${DIR}/.terraform" || true
   rm -rf "${DIR}/terraform.tfstate" || true
-  STATE_BUCKET="mockserver-terraform-remote-state-storage"
+  STATE_BUCKET="mockserver-terraform-state-storage"
   echo "Using S3 to manage state: ${STATE_BUCKET}"
   eval "${TERRAFORM_PATH} init -backend-config='key=terraform-${SERVICE_NAME}-${ENVIRONMENT}.tfstate' \
                          -backend-config='encrypt=true' \

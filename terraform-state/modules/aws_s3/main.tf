@@ -1,6 +1,6 @@
 resource "aws_s3_bucket" "terraform-state-storage" {
-  bucket = "${var.bucket_name}"
-  acl = "private"
+  bucket        = "${var.bucket_name}"
+  acl           = "private"
   force_destroy = "false"
 
   versioning {

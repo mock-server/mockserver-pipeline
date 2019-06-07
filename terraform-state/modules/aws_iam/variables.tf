@@ -3,6 +3,6 @@ variable "user_name" {
 }
 
 variable "regenerate_access_key" {
-  type = "string"
+  type        = "string"
   description = "either true or false"
 }

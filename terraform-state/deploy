@@ -60,17 +60,22 @@ init() {
   rm -rf "${DIR}/terraform.tfstate" || true
   rm -rf "${DIR}/terraform.tfstate.*" || true
   ${TERRAFORM_PATH} init
-  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-user.aws_iam_user.user mockserver-pipeline-user
 
-  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-state-lock.aws_dynamodb_table.dynamodb-terraform-state-lock mockserver-terraform-state-lock-dynamo
-  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-state-lock.aws_iam_policy.dynamo-iam-policy arn:aws:iam::014848309742:policy/mockserver-pipeline-user-dynamodb-mockserver-terraform-state-lock-dynamo-iam-policy
-  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-state-lock.aws_iam_user_policy_attachment.attach-table-policy mockserver-pipeline-user/arn:aws:iam::014848309742:policy/mockserver-pipeline-user-dynamodb-mockserver-terraform-state-lock-dynamo-iam-policy
+  ACCOUNT_ID=845082306870
+  USER_NAME=mockserver-pipeline-user
+  DYNAMO_TABLE_NAME=mockserver-terraform-state-lock-dynamo
+  S3_BUCKET_NAME=mockserver-terraform-state-storage
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-user.aws_iam_user.user ${USER_NAME}
 
-  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-remote-state-storage.aws_s3_bucket.terraform-state-storage mockserver-terraform-remote-state-storage
-  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-remote-state-storage.aws_iam_policy.s3-iam-policy arn:aws:iam::014848309742:policy/mockserver-pipeline-user-s3-mockserver-terraform-remote-state-storage-iam-policy
-  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-remote-state-storage.aws_iam_user_policy_attachment.attach-bucket-policy mockserver-pipeline-user/arn:aws:iam::014848309742:policy/mockserver-pipeline-user-s3-mockserver-terraform-remote-state-storage-iam-policy
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-state-lock.aws_dynamodb_table.dynamodb-terraform-state-lock ${DYNAMO_TABLE_NAME}
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-state-lock.aws_iam_policy.dynamo-iam-policy arn:aws:iam::${ACCOUNT_ID}:policy/${USER_NAME}-dynamodb-${DYNAMO_TABLE_NAME}-iam-policy
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-state-lock.aws_iam_user_policy_attachment.attach-table-policy ${USER_NAME}/arn:aws:iam::${ACCOUNT_ID}:policy/${USER_NAME}-dynamodb-${DYNAMO_TABLE_NAME}-iam-policy
 
-  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.credential-encryption-key.aws_kms_key.key c73da5cc-8ab7-404e-8257-ac567eda7e94
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-remote-state-storage.aws_s3_bucket.terraform-state-storage ${S3_BUCKET_NAME}
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-remote-state-storage.aws_iam_policy.s3-iam-policy arn:aws:iam::${ACCOUNT_ID}:policy/${USER_NAME}-s3-${S3_BUCKET_NAME}-iam-policy
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.terraform-remote-state-storage.aws_iam_user_policy_attachment.attach-bucket-policy ${USER_NAME}/arn:aws:iam::${ACCOUNT_ID}:policy/${USER_NAME}-s3-${S3_BUCKET_NAME}-iam-policy
+
+  ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.credential-encryption-key.aws_kms_key.key f2a28f23-96bb-46dc-baa1-7f07177bb96a
   ${TERRAFORM_PATH} import -var-file ${VAR_FILE} module.credential-encryption-key.aws_kms_alias.alias alias/mockserver-credential-encryption-key
 }
 

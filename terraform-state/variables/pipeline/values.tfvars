@@ -1,6 +1,6 @@
-account_id = "014848309742"
+account_id = "845082306870"
 user_name = "mockserver-pipeline-user"
 regenerate_access_key = "false"
 lock_table_name = "mockserver-terraform-state-lock-dynamo"
-state_bucket_name = "mockserver-terraform-remote-state-storage"
+state_bucket_name = "mockserver-terraform-state-storage"
 credential_encryption_user_arn = "arn:aws:iam::014848309742:user/APIAdministrator"
