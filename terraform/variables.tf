@@ -6,6 +6,6 @@ variable "user_name" {
   type = "string"
 }
 
-variable "regenerate_access_key" {
-  default = "false"
+variable "cluster_name" {
+  type = "string"
 }
