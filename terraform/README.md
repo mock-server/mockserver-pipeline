@@ -1,3 +1,4 @@
+Terraform inspired from https://learn.hashicorp.com/terraform/aws/eks-intro
 #### decrypt credentials
 AWS_ACCESS_KEY_ID=*** AWS_SECRET_ACCESS_KEY=*** ./decrypt-terraform-credentials.sh 
 #### Terraform Wrapper Script
