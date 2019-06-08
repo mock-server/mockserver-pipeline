@@ -29,3 +29,13 @@ For example apply as follows:
 ./deploy plan-destroy pipeline
 ./deploy destroy pipeline
 ```
+### configure kubectl
+```bash
+./configure-kubectl.sh
+```
+### authorise nodes to join kubernetes cluster
+```bash
+./deploy worker_nodes_role pipeline
+./kubectl.sh "apply -f config_map_aws_auth.yaml"
+./kubectl.sh "get nodes --watch"
+```

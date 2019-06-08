@@ -59,17 +59,27 @@ resource "aws_security_group_rule" "master-cluster-ingress-workstation-https" {
   type              = "ingress"
 }
 
+resource "aws_cloudwatch_log_group" "log_group" {
+  name              = "/aws/eks/${var.cluster_name}/cluster"
+  retention_in_days = 7
+}
+
 # master cluster
 resource "aws_eks_cluster" "eks" {
   name     = "${var.cluster_name}"
   role_arn = "${aws_iam_role.master-role.arn}"
 
+  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
   vpc_config {
-    security_group_ids = ["${aws_security_group.master-sg.id}"]
-    subnet_ids         = ["${var.subnet_ids}"]
+    security_group_ids      = ["${aws_security_group.master-sg.id}"]
+    subnet_ids              = ["${var.subnet_ids}"]
+    endpoint_private_access = "false"
+    endpoint_public_access  = "true"
   }
 
   depends_on = [
+    "aws_cloudwatch_log_group.log_group",
     "aws_iam_role_policy_attachment.master-cluster-AmazonEKSClusterPolicy",
     "aws_iam_role_policy_attachment.master-cluster-AmazonEKSServicePolicy",
   ]
