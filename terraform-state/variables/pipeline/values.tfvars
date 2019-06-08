@@ -1,5 +1,5 @@
 account_id = "845082306870"
-user_name = "mockserver-pipeline-user"
+user_name = "mockserver-terraform-user"
 regenerate_access_key = "false"
 lock_table_name = "mockserver-terraform-state-lock-dynamo"
 state_bucket_name = "mockserver-terraform-state-storage"

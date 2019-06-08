@@ -6,5 +6,5 @@ terraform.tfstate.backup
 .terraform
 
 # aws credentials
-terraform-credentials.txt
-terraform-credentials.dec
+*-credentials.txt
+*-credentials.dec

@@ -1,7 +1,7 @@
-output "pipeline-user-access-key-id" {
-  value = "${aws_iam_access_key.pipeline-user.*.id}"
+output "awsKeyId" {
+  value = "${module.pipeline-user.user-access-key-id}"
 }
 
-output "pipeline-user-access-key-secret" {
-  value = "${aws_iam_access_key.pipeline-user.*.secret}"
+output "awsKeySecret" {
+  value = "${module.pipeline-user.user-access-key-secret}"
 }

@@ -1,3 +1,5 @@
+#### decrypt credentials
+AWS_ACCESS_KEY_ID=*** AWS_SECRET_ACCESS_KEY=*** ./decrypt-terraform-credentials.sh 
 #### Terraform Wrapper Script
 ```
 Usage: ./deploy [-v|t] [ACTION] [ENVIRONMENT]
@@ -9,21 +11,21 @@ Usage: ./deploy [-v|t] [ACTION] [ENVIRONMENT]
 #### build execution plan
 For example build plan as follows:
 ```bash
-AWS_ACCESS_KEY_ID=*** AWS_SECRET_ACCESS_KEY=*** ./deploy plan pipeline
+./deploy plan pipeline
 ```
 #### create infrastructure
 For example apply as follows:
 ```bash
-AWS_ACCESS_KEY_ID=*** AWS_SECRET_ACCESS_KEY=*** ./deploy apply pipeline
+./deploy apply pipeline
 ```
 #### update infrastructure
 For example apply as follows:
 ```bash
-AWS_ACCESS_KEY_ID=*** AWS_SECRET_ACCESS_KEY=*** ./deploy apply pipeline
+./deploy apply pipeline
 ```
 #### delete infrastructure
 For example apply as follows:
 ```bash
-AWS_ACCESS_KEY_ID=*** AWS_SECRET_ACCESS_KEY=*** ./deploy plan-destroy pipeline
-AWS_ACCESS_KEY_ID=*** AWS_SECRET_ACCESS_KEY=*** ./deploy destroy pipeline
+./deploy plan-destroy pipeline
+./deploy destroy pipeline
 ```

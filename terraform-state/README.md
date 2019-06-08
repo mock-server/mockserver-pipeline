@@ -27,3 +27,5 @@ For example apply as follows:
 AWS_ACCESS_KEY_ID=*** AWS_SECRET_ACCESS_KEY=*** ./deploy plan-destroy pipeline
 AWS_ACCESS_KEY_ID=*** AWS_SECRET_ACCESS_KEY=*** ./deploy destroy pipeline
 ```
+#### encrypt credentials
+AWS_ACCESS_KEY_ID=*** AWS_SECRET_ACCESS_KEY=*** ./decrypt-encrypt-credentials.sh
