@@ -102,6 +102,10 @@ destroy() {
   ${TERRAFORM_PATH} destroy -var-file ${VAR_FILE}
 }
 
+output() {
+  ${TERRAFORM_PATH} output
+}
+
 worker_nodes_role() {
   ${TERRAFORM_PATH} output config_map_aws_auth > config_map_aws_auth.yaml
 }

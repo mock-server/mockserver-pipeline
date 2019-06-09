@@ -1,9 +1,27 @@
-output "awsKeyId" {
-  value = "${module.pipeline-user.user-access-key-id}"
+locals {
+  pipeline_credentials = <<CONFIGMAPAWSAUTH
+
+
+awsKeyId=${module.pipeline-user.pipeline-user-access-key-id}
+awsKeySecret=${module.pipeline-user.pipeline-user-access-key-secret}
+CONFIGMAPAWSAUTH
 }
 
-output "awsKeySecret" {
-  value = "${module.pipeline-user.user-access-key-secret}"
+output "pipeline_credentials" {
+  value = "${local.pipeline_credentials}"
+}
+
+locals {
+  kubernetes_credentials = <<CONFIGMAPAWSAUTH
+
+
+awsKeyId=${module.pipeline-user.kube-user-access-key-id}
+awsKeySecret=${module.pipeline-user.kube-user-access-key-secret}
+CONFIGMAPAWSAUTH
+}
+
+output "kubernetes_credentials" {
+  value = "${local.kubernetes_credentials}"
 }
 
 locals {
