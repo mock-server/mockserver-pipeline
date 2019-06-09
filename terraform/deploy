@@ -43,8 +43,8 @@ while getopts 'tv' flag; do
   esac
 done
 shift $(( OPTIND - 1 ))
-ACTION=$1
-ENVIRONMENT=$2
+ACTION=${1}
+ENVIRONMENT=${2:-pipeline}
 
 check_value() {
   if [[ -z $1 ]]; then

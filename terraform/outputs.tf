@@ -22,6 +22,11 @@ data:
       groups:
         - system:bootstrappers
         - system:nodes
+  mapUsers: |
+    - userarn: arn:aws:iam::${var.account_id}:user/${var.kube_user_name}
+      username: ${var.kube_user_name}
+      groups:
+        - system:masters
 CONFIGMAPAWSAUTH
 }
 

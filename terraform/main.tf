@@ -1,6 +1,7 @@
 module "pipeline-user" {
   source    = "modules/aws_iam"
-  user_name = "${var.user_name}"
+  pipeline_user_name = "${var.pipeline_user_name}"
+  kube_user_name = "${var.kube_user_name}"
 }
 
 module "eks_vpc" {

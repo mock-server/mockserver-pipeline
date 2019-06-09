@@ -12,4 +12,9 @@ data:
       groups:
         - system:bootstrappers
         - system:nodes
+  mapUsers: |
+    - userarn: arn:aws:iam::845082306870:user/mockserver-kube-user
+      username: mockserver-kube-user
+      groups:
+        - system:masters
 
