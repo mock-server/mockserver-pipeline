@@ -19,4 +19,5 @@ else
   echo "$credentials_file not found."
 fi
 
+eval "AWS_ACCESS_KEY_ID=${awsKeyId} AWS_SECRET_ACCESS_KEY=${awsKeySecret} aws sts get-caller-identity"
 eval "AWS_ACCESS_KEY_ID=${awsKeyId} AWS_SECRET_ACCESS_KEY=${awsKeySecret} kubectl --context mockserver-eks ${1}"

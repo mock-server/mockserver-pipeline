@@ -69,7 +69,7 @@ resource "aws_security_group_rule" "node-ingress-node" {
   type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "node-ingress-cluster" {
+resource "aws_security_group_rule" "node-ingress-master" {
   description              = "Allow worker Kubelets and pods to receive communication from the cluster control plane"
   from_port                = 1025
   protocol                 = "tcp"
@@ -79,7 +79,7 @@ resource "aws_security_group_rule" "node-ingress-cluster" {
   type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "demo-cluster-ingress-node-https" {
+resource "aws_security_group_rule" "master-ingress-node-https" {
   description              = "Allow pods to communicate with the cluster API Server"
   from_port                = 443
   protocol                 = "tcp"

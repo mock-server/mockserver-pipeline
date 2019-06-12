@@ -44,7 +44,7 @@ data:
     - userarn: arn:aws:iam::${var.account_id}:user/${var.kube_user_name}
       username: ${var.kube_user_name}
       groups:
-        - system:masters
+        - mockserver:admin
 CONFIGMAPAWSAUTH
 }
 

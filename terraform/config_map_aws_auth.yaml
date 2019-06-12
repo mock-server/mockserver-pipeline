@@ -16,5 +16,5 @@ data:
     - userarn: arn:aws:iam::845082306870:user/mockserver-kube-user
       username: mockserver-kube-user
       groups:
-        - system:masters
+        - mockserver:admin
 

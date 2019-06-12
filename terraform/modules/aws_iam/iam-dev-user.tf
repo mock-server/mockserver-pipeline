@@ -13,5 +13,5 @@ resource "aws_iam_user" "kube-user" {
 }
 
 resource "aws_iam_access_key" "kube-user-key" {
-  user = "${aws_iam_user.pipeline-user.name}"
+  user = "${aws_iam_user.kube-user.name}"
 }

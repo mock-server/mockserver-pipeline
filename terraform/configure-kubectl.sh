@@ -32,3 +32,4 @@ eval "AWS_ACCESS_KEY_ID=${awsKeyId} AWS_SECRET_ACCESS_KEY=${awsKeySecret} aws st
 eval "AWS_ACCESS_KEY_ID=${awsKeyId} AWS_SECRET_ACCESS_KEY=${awsKeySecret} aws --region eu-west-1 eks update-kubeconfig --name mockserver-eks --alias mockserver-eks"
 ./deploy worker_nodes_role
 ./kubectl.sh "apply -f config_map_aws_auth.yaml"
+./kubectl.sh "apply -f roles.yaml"

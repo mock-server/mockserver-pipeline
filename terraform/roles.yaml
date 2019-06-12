@@ -1,0 +1,52 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: mockserver
+  name: ns-admin
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: list-namespaces
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "watch", "list"]
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mockserver
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: mockserver
+  name: pipeline-ns-admin
+subjects:
+  - kind: User
+    name: mockserver-kube-user
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: ns-admin
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pipeline-list-namespaces
+subjects:
+  - kind: Group
+    name: mockserver:admin
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: list-namespaces
+---
