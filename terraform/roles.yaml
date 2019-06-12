@@ -37,7 +37,7 @@ roleRef:
     kind: Role
     name: ns-admin
 ---
-kind: RoleBinding
+kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: pipeline-list-namespaces

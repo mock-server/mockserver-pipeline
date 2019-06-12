@@ -3,8 +3,8 @@ set -e
 
 # parse AWS credentials
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-credentials_file="${DIR}/terraform-credentials.dec"
-#credentials_file="${DIR}/kubernetes-credentials.dec"
+#credentials_file="${DIR}/terraform-credentials.dec"
+credentials_file="${DIR}/kubernetes-credentials.dec"
 if [[ -f "$credentials_file" ]]
 then
   echo "$credentials_file found."
